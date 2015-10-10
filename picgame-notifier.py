@@ -31,7 +31,7 @@ def notify_comment(p):
     solved = True
     if not mute:
       print('\a \a \a')
-  if host == username and !mute:
+  if host == username and not mute:
     print('\a')
 
 def update_post(a):
@@ -42,7 +42,7 @@ def update_post(a):
       host = p.author._case_name
       notify_post(p)
       return p
-    if p.created = rp: # This occurs if the most recent message(s) are mod messages.
+    if p.created == rp: # This occurs if the most recent message(s) are mod messages.
       return p
 
 def check(m):
@@ -60,7 +60,7 @@ def update_comments(a): # returns maximum time
   return mt
 
 while True:
-  time.wait(SLEEP)
+  time.sleep(SLEEP)
   s = r.get_subreddit('PictureGame').get_new(limit=10)
   a = list(s)
   # if no unsolved round: detect new round
@@ -68,7 +68,7 @@ while True:
   p = a[0] # p is the active round
   if a[0].created > rp:
     p = update_post(a)
-  if solved = False:
+  if not solved:
     rc = update_comments(p.comments)
   # if unsolved round: detect new answers
     # if +correct detected: PING, go to unsolved mode
