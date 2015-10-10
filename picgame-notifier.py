@@ -21,7 +21,7 @@ host = "" # host of the round
 def notify_post(p):
   print('NEW ROUND UP!')
   print('['+time.ctime(p.created)+']', p.author._case_name, 'posted', p.title)
-  if !mute:
+  if not mute:
     print('\a \a')
 
 def notify_comment(p):
@@ -29,7 +29,7 @@ def notify_comment(p):
   if p.body.find('+correct') != -1:
     print('ROUND OVER!')
     solved = True
-    if !mute:
+    if not mute:
       print('\a \a \a')
   if host == username and !mute:
     print('\a')
