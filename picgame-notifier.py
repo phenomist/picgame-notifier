@@ -19,6 +19,7 @@ solved = False # is the current round solved?
 host = "" # host of the round
 
 def notify_post(p):
+  print()
   print('NEW ROUND UP!')
   print('['+time.ctime(p.created_utc)+']', p.author._case_name, 'posted', p.title)
   if not mute:
@@ -26,6 +27,7 @@ def notify_post(p):
 
 def notify_comment(p):
   if p.author._case_name not in ["AutoModerator", "r_PictureGame"]:
+    print()
     print('['+time.ctime(p.created_utc)+']', p.author._case_name, 'posted', p.body)
   if p.body.find('+correct') != -1 and p.author._case_name == host:
     print('ROUND OVER!')
@@ -64,14 +66,18 @@ def update_comments(a): # returns maximum time
 
 while True:
   time.sleep(SLEEP)
+  curtime = time.time()
   s = r.get_subreddit('PictureGame').get_new(limit=10)
   a = list(s)
+  if len(a) == 0:
+    print('['+time.ctime(curtime)+']', 'Update failed!')
+  else:
+    print('['+time.ctime(curtime)+']', 'Updated!')
   # if no unsolved round: detect new round
   # if new round: PING, go to solving mode
   p = a[0] # p is the active round
   if a[0].created_utc > rp:
     p = update_post(a)
-    #print("test")
   if not solved and p:
     rc = update_comments(p.comments)
   # if unsolved round: detect new answers
