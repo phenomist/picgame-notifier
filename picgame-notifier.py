@@ -25,7 +25,8 @@ def notify_post(p):
     print('\a \a')
 
 def notify_comment(p):
-  print('['+time.ctime(p.created_utc)+']', p.author._case_name, 'posted', p.body)
+  if p.author._case_name not in ["AutoModerator", "r_PictureGame"]:
+    print('['+time.ctime(p.created_utc)+']', p.author._case_name, 'posted', p.body)
   if p.body.find('+correct') != -1 and p.author._case_name == host:
     print('ROUND OVER!')
     solved = True
@@ -45,6 +46,7 @@ def update_post(a):
       return p
     if p.created_utc == rp: # This occurs if the most recent message(s) are mod messages.
       return p
+
 
 def check(m):
   mt = m.created_utc
@@ -70,7 +72,7 @@ while True:
   if a[0].created_utc > rp:
     p = update_post(a)
     #print("test")
-  if not solved:
+  if not solved and p:
     rc = update_comments(p.comments)
   # if unsolved round: detect new answers
     # if +correct detected: PING, go to unsolved mode
