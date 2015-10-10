@@ -20,13 +20,13 @@ host = "" # host of the round
 
 def notify_post(p):
   print('NEW ROUND UP!')
-  print('['+time.ctime(p.created)+']', p.author._case_name, 'posted', p.title)
+  print('['+time.ctime(p.created_utc)+']', p.author._case_name, 'posted', p.title)
   if not mute:
     print('\a \a')
 
 def notify_comment(p):
-  print('['+time.ctime(p.created)+']', p.author._case_name, 'posted', p.body)
-  if p.body.find('+correct') != -1:
+  print('['+time.ctime(p.created_utc)+']', p.author._case_name, 'posted', p.body)
+  if p.body.find('+correct') != -1 and p.author._case_name == host:
     print('ROUND OVER!')
     solved = True
     if not mute:
@@ -35,20 +35,21 @@ def notify_comment(p):
     print('\a')
 
 def update_post(a):
+  global rp
   for p in a:
-    if p.created > rp and p.link_flair_text=="UNSOLVED":
-      rp = p.created
+    if p.created_utc > rp and p.link_flair_text=="UNSOLVED":
+      rp = p.created_utc
       solved = False
       host = p.author._case_name
       notify_post(p)
       return p
-    if p.created == rp: # This occurs if the most recent message(s) are mod messages.
+    if p.created_utc == rp: # This occurs if the most recent message(s) are mod messages.
       return p
 
 def check(m):
-  mt = m.created
-  if m.created > rc:
-    notify_post(m)
+  mt = m.created_utc
+  if m.created_utc > rc:
+    notify_comment(m)
   for p in m._replies:
     mt = max(mt, check(p))
   return mt
@@ -66,8 +67,9 @@ while True:
   # if no unsolved round: detect new round
   # if new round: PING, go to solving mode
   p = a[0] # p is the active round
-  if a[0].created > rp:
+  if a[0].created_utc > rp:
     p = update_post(a)
+    #print("test")
   if not solved:
     rc = update_comments(p.comments)
   # if unsolved round: detect new answers
