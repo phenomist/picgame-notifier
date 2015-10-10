@@ -21,14 +21,20 @@ host = "" # host of the round
 def notify_post(p):
   print()
   print('NEW ROUND UP!')
-  print('['+time.ctime(p.created_utc)+']', p.author._case_name, 'posted', p.title)
+  try:
+    print('['+time.ctime(p.created_utc)+']', p.author._case_name, 'posted', p.title)
+  except UnicodeEncodeError:
+    print('['+time.ctime(p.created_utc)+']', p.author._case_name, 'posted a round')
   if not mute:
     print('\a \a')
 
 def notify_comment(p):
   if p.author._case_name not in ["AutoModerator", "r_PictureGame"]:
     print()
-    print('['+time.ctime(p.created_utc)+']', p.author._case_name, 'posted', p.body)
+    try:
+      print('['+time.ctime(p.created_utc)+']', p.author._case_name, 'posted', p.body)
+    except UnicodeEncodeError:
+      print('['+time.ctime(p.created_utc)+']', p.author._case_name, 'posted a comment') # handle encoding problems
   if p.body.find('+correct') != -1 and p.author._case_name == host:
     print('ROUND OVER!')
     solved = True
